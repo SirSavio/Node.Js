@@ -2,10 +2,10 @@ const express = require('express')
 const Category = require('../categories/Category')
 const Article = require('../articles/Article');
 const slugify = require('slugify');
-const { response } = require('express');
 const router = express.Router()
+const auth = require('../middlewares/auth')
 
-router.get('/admin/articles', (request, response) => {
+router.get('/admin/articles', auth,  (request, response) => {
     Article.findAll({
         include: [{model: Category}]
     }).then((articles) => {
@@ -14,13 +14,13 @@ router.get('/admin/articles', (request, response) => {
     })
 })
 
-router.get('/admin/articles/new', (request, response) => {
+router.get('/admin/articles/new', auth, (request, response) => {
     Category.findAll().then((categories) => {
         response.render('admin/articles/new', {categories})
     })
 })
 
-router.post('/articles/save', (request, response) => {
+router.post('/articles/save', auth, (request, response) => {
     console.log(request.body)
     let title = request.body.title
     let body = request.body.body
@@ -36,7 +36,7 @@ router.post('/articles/save', (request, response) => {
     })
 })
 
-router.post('/articles/delete', (request, response) => {
+router.post('/articles/delete', auth, (request, response) => {
     let articleId = request.body.id
 
     if(!articleId || isNaN(articleId)) response.redirect('/admin/articles')
@@ -51,7 +51,7 @@ router.post('/articles/delete', (request, response) => {
     }
 })
 
-router.get('/admin/articles/edit/:id', (request, response) => {
+router.get('/admin/articles/edit/:id', auth, (request, response) => {
     let articleId = request.params.id
     
     Article.findOne({
@@ -64,7 +64,7 @@ router.get('/admin/articles/edit/:id', (request, response) => {
     })
 })
 
-router.post('/articles/update', (request, response) => {
+router.post('/articles/update', auth, (request, response) => {
     let articleId = request.body.id
     let title = request.body.title
     let body = request.body.body
