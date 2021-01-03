@@ -1,0 +1,70 @@
+<%- include('../../partials/header.ejs') %>
+
+    <body>
+        <%- include('../../partials/navbar.ejs') %>
+
+            <div class="container pt-5">
+                <hr>
+
+
+                <div class="card">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h2 class="mt-3">Artigos</h2>
+                        <a class="btn btn-success mt-3" href="/admin/articles/new">Criar Novo Artigo</a>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Título</th>
+                                    <th>Slug</th>
+                                    <th>Categoria</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% articles.forEach(article => { %>
+                                    <tr>
+                                        <th>
+                                            <%= article.id %>
+                                        </th>
+                                        <th>
+                                            <%= article.title %>
+                                        </th>
+                                        <th>
+                                            <%= article.slug %>
+                                        </th>
+                                        <th>
+                                            <%= article.category.title %> 
+                                        </th>
+                                        <th>
+                                            <div align="center">
+                                                <a href="/admin/articles/edit/<%= article.id %>" class="btn btn-warning text-white">Editar</a>
+                                                <form action='/articles/delete' method="POST" class="d-inline" onsubmit="confirmDelete(event, this)">
+                                                    <input type="hidden" name="id" value="<%= article.id %>">
+                                                    <button class="btn btn-danger">Deletar</button>
+                                                </form>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <% }) %>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </body>
+
+    <script>
+        function confirmDelete(event, form){
+            event.preventDefault()
+            let choose = confirm('Você quer deletar esse artigo?')
+            if(choose) form.submit()
+            else return
+        }
+    </script>
+
+    <%- include('../../partials/footer.ejs') %>
